@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>component learning</title>
+	<script type="text/javascript" src="vue.js"></script>
+</head>
+<body>
+<div id="ap1">
+	<global></global>
+	<ul>
+		<li v-for="n in 10">{{n}}</li>
+	</ul>
+</div>
+
+<div id="ap2">
+	<par></par>
+</div>
+
+<div id="ap3">
+	<chi message="hello!"></chi>
+</div>
+
+<div id="ap4">
+	<input v-model="parent">
+	<br>
+	<hai :message="parent"></hai>
+</div>
+
+<div id="ap5">
+	<ol>
+		<todo-item v-for="item in sites" :todo="item"></todo-item>
+	</ol>
+</div>
+
+<div id="ap6">
+	<div id="counter-event-e">
+		<p>{{total}}</p>
+		<button-counter v-on:increment="incrementTotal"></button-counter>
+		<button-counter v-on:increment="incrementTotal"></button-counter>
+	</div>
+</div>
+
+<div id="ap7">
+	<input v-focus>
+</div>
+
+<script type="text/javascript">
+
+//自定义指令
+new Vue({
+	el:"#ap7",
+	directives:{
+		focus:{
+			inserted:function(el){
+				el.focus()
+			}
+		}
+	}
+})
+
+//自定义事件
+Vue.component("button-counter",{
+	template:'<button v-on:click="increment">{{counter}}</button>',
+	data:function(){
+		return {
+			counter:0
+		}
+	},
+
+	methods:{
+		increment:function(){
+			this.counter+=1
+			this.$emit('increment')
+		}
+	}
+})
+new Vue({
+	//el:"#counter-event-e",
+	el:"#ap6",
+	data:{
+		total:0
+	},
+	methods:{
+		incrementTotal:function(){
+		this.total+=1
+		}
+	}
+	
+})
+
+Vue.component('todo-item',{
+	props:['todo'],
+	template:'<li>{{todo.text}}</li>'
+})
+new Vue({
+	el:"#ap5",
+	data:{
+		sites:[
+			{text:'come'},
+			{text:'on'},
+			{text:'baby!'}
+		]
+	}
+})
+//注册
+	Vue.component('global',{
+		template:'<h1>自定义全局组件</h1>'
+	})
+//创建根实例
+new Vue({
+	el:"#ap1"
+	})
+
+var child={
+	template:"<h1>自定义局部组件</h1>"
+}
+//创建根实例
+new Vue({
+	el:"#ap2",
+	components:{
+		//<par>将只在父模板可用
+		"par":child
+	}
+})
+
+Vue.component("chi",{
+	template:'<span>{{message}}</span>',
+	props:['message']
+})
+new Vue({
+	el:'#ap3'
+})
+
+Vue.component("hai",{
+	props:["message"],
+	template:"<span>{{message}}</span>"
+})
+new Vue({
+	el:"#ap4",
+	data:{
+		parent:"父组件内容"
+	}
+})
+</script>
+</body>
+</html>
